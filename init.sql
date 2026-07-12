@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS events (
+    id SERIAL PRIMARY KEY,
+    event_type VARCHAR(50),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
