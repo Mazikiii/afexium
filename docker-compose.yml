@@ -1,8 +1,6 @@
-version: "3.8"
-
 services:
   db:
-    image: postgres:16-alphine
+    image: postgres:16-alpine
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: ${DB_PASSWORD}
@@ -13,7 +11,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U admin -d afexium"]
+      test: ["CMD-SHELL", "pg_isready -U admin -d afexium_db"]
       interval: 10s
       timeout: 5s
       retries: 3
@@ -23,13 +21,13 @@ services:
     ports:
       - "5000:5000"
     environment:
-      DATABASE_URL: postgresql://admin:${DB_PASSWORD@db:5432/afexium
+      DATABASE_URL: postgresql://admin:${DB_PASSWORD}@db:5432/afexium_db
     depends_on:
       db:
         condition: service_healthy
 
   nginx:
-    image: nginx:alphine
+    image: nginx:alpine
     ports:
       - "80:80"
     volumes:

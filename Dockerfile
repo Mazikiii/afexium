@@ -2,7 +2,7 @@ FROM python:3.11-slim AS builder
 
 WORKDIR /app
 RUN python -m venv /opt/venv
-ENV PATH="opt/venv/bin:$PATH"
+ENV PATH="/opt/venv/bin:$PATH"
 
 COPY requirements.txt .
 
