@@ -1,9 +1,11 @@
-import os
 import logging
+import os
+
 from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
+_leaked_memory = []
 
 
 def create_app(config_name=None):
@@ -53,6 +55,14 @@ def create_app(config_name=None):
                 "database": db_status,
             }
         ), (200 if db_status == "healthy" else 503)
+
+    @app.route("/memory-leak")
+    def memory_leak():
+        for i in range(1000000):
+            _leaked_memory.append("x" * 1000)
+        return jsonify(
+            {"status": "consuming memory", "total_allocations": len(_leaked_memory)}
+        )
 
     @app.route("/")
     def index():

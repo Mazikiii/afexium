@@ -74,14 +74,14 @@ class TestWarehousesAPI:
         assert data["warehouses"][0]["available_mt"] == 5000.0
 
     def test_available_warehouses_with_min_capacity(self, client, sample_warehouse):
-        from afex_devops import db
-        from afex_devops.models import Warehouse
+        from afexium import db
+        from afexium.models import Warehouse
 
         warehouse = Warehouse(
             name="Small Warehouse",
             state="Lagos",
-            capacity_mt=Decimal("100"),
-            utilized_mt=Decimal("80"),
+            capacity_mt=Decimal("200"),
+            utilized_mt=Decimal("100"),
         )
         db.session.add(warehouse)
         db.session.commit()
@@ -91,7 +91,7 @@ class TestWarehousesAPI:
         data = json.loads(response.data)
         assert len(data["warehouses"]) == 2
 
-        response = client.get("/api/v1/warehouses/available?min_capacity=30")
+        response = client.get("/api/v1/warehouses/available?min_capacity=200")
         assert response.status_code == 200
         data = json.loads(response.data)
         assert len(data["warehouses"]) == 1
@@ -110,8 +110,8 @@ class TestWarehousesAPI:
         )
         warehouse_id = json.loads(response.data)["id"]
 
-        from afex_devops import db
-        from afex_devops.models import Warehouse
+        from afexium import db
+        from afexium.models import Warehouse
 
         warehouse = db.session.get(Warehouse, warehouse_id)
         warehouse.utilized_mt = Decimal("750")
